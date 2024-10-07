@@ -29,7 +29,7 @@ r= True
 while r:
     pygame.time.delay(10)
     for event in pygame.event.get():
-        if event.type==pygame.quit:
+        if event.type==pygame.QUIT:
             r= False
     keys=pygame.key.get_pressed()
     if keys[pygame.K_UP]and y>0:
