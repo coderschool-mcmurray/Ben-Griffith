@@ -9,7 +9,7 @@ COLORS={
     'BLUE' : (0,0,255),
     'WHITE' : (255,255,255),
     'BLACK'  :(0,0,0),
-    'GRAY' : (10,10,10)}
+    'GRAY' : (50,50,50)}
 
 pygame.init()
 
@@ -42,8 +42,21 @@ class Block:
 def save(writefile,blocks):
     f =open(writefile,'w')
     for block in blocks:
-        f.write(f"{block.x_loc-50},{block.y_loc-50},{block.length-50},{block.width-50},{block.color},\n")
+        f.write(f"{block.x_loc-50},{block.y_loc-50},{block.length},{block.width},{block.color},\n")
     f.close()
+
+def get_level(workfile):
+    blocks=[]
+    f=open(workfile, 'r', encoding="utf-8")
+    for line in f:
+        line=line.split(',')
+        x=int(line[0])
+        y=int(line[1])
+        length=int(line[2])
+        width=int(line[3])
+        color=line[4]
+        blocks.append(Block(x+50,y+50,length,width,color))
+    return blocks
 
 r=True
 
@@ -57,7 +70,7 @@ color='WHITE'
 blocks=[]
 ##This is how the blocks are in the game and what the different colors##
 while r:
-    pygame.time.delay(10)
+    pygame.time.delay(1)
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             r= False
@@ -83,7 +96,10 @@ while r:
                     create=True
     keys=pygame.key.get_pressed()
     if keys[pygame.K_s]:
-        save('test_level',blocks)
+        level=input()
+        save(level,blocks)
+    elif keys[pygame.K_l]:
+        blocks = get_level(input())
     elif keys[pygame.K_0]:
         color="RED"
     elif keys[pygame.K_1]:
@@ -96,8 +112,11 @@ while r:
         color="BLACK"
     elif keys[pygame.K_5]:
         color="GRAY"
+    elif keys[pygame.K_r]:
+        blocks.pop(-1)
+        pygame.time.delay(100)
 #This is the color of the base color of the Game
-    display.fill(COLORS['GRAY'])
+    display.fill((30,30,30))
     pygame.draw.rect(display,(100,100,100),(50,50,500,500))
     for b in blocks:
         b.draw(display)

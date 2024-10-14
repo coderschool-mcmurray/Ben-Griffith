@@ -8,11 +8,11 @@ COLORS={
     'BLUE' : (0,0,255),
     'WHITE' : (255,255,255),
     'BLACK'  :(0,0,0),
-    'GRAY' : (10,10,10)}
+    'GRAY' : (50,50,50)}
 
 GRAVITY=1
 fall=0
-jump=-15
+jump=-10
 pygame.init()
 
 pygame.display.set_caption('Dot Game thingy')
@@ -25,14 +25,14 @@ class Block:
     length=0
     width=0
     color=(0,0,0)
-    def __init__(self, x_loc=0, y_loc=0, length=0, width=0, color=COLORS['RED']):
+    def __init__(self, x_loc=0, y_loc=0, length=0, width=0, color='RED'):
         self.x_loc = x_loc
         self.y_loc = y_loc
         self.length = length
         self.width = width
         self.color = color
     def draw(self, display):
-        pygame.draw.rect(display,self.color,(self.x_loc,self.y_loc,self.width,self.length))
+        pygame.draw.rect(display,COLORS[self.color],(self.x_loc,self.y_loc,self.width,self.length))
     def is_collision(self,x,y,l,w):
 
         if x>=self.x_loc + self.width or x+w<=self.x_loc:
@@ -50,12 +50,12 @@ def get_level(workfile):
         y=int(line[1])
         length=int(line[2])
         width=int(line[3])
-        color=COLORS[line[4]]
+        color=line[4]
         blocks.append(Block(x,y,length,width,color))
     return blocks
 #starting location
-x = 40
-y= 70
+x = 0
+y= 0
 
 #character size
 w= 10
@@ -72,7 +72,7 @@ move_l=False
 move_r=False
 j=False
 while r:
-    pygame.time.delay(10)
+    pygame.time.delay(20)
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             r= False
@@ -98,6 +98,10 @@ while r:
         r=False
     fall+=GRAVITY
     y+=fall
+    if y>WINDSIZE[1]:
+        x=0
+        y=0
+        fall=0
     for b in blocks:
         if b.is_collision(x,y,l,w):
             if fall<0:
@@ -105,7 +109,7 @@ while r:
             else:
                 y=b.y_loc-l
             fall=0
-    display.fill(COLORS['GRAY'])
+    display.fill((100,100,100))
     for b in blocks:
         b.draw(display)
     pygame.draw.rect(display,COLORS['BLUE'],(x,y,w,l))
