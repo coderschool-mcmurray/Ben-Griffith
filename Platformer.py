@@ -10,9 +10,9 @@ COLORS={
     'BLACK'  :(0,0,0),
     'GRAY' : (50,50,50)}
 
-GRAVITY=1
+GRAVITY=0.75
 fall=0
-jump=-10
+jump=-9.5
 pygame.init()
 
 pygame.display.set_caption('Dot Game thingy')
@@ -66,7 +66,8 @@ speed = 5
 
 #game running?
 r = True
-blocks=get_level('level1')
+level=1
+blocks=get_level(f'level{level}')
 
 move_l=False
 move_r=False
@@ -99,12 +100,18 @@ while r:
     fall+=GRAVITY
     y+=fall
     if y>WINDSIZE[1]:
+        blocks.clear()
+        level+=1
+        blocks=get_level(f'level{level}')
         x=0
         y=0
         fall=0
     for b in blocks:
         if b.is_collision(x,y,l,w):
-            if fall<0:
+            if b.color=="RED":
+                x=0
+                y=0
+            elif fall<0:
                 y=b.y_loc+ b.length
             else:
                 y=b.y_loc-l
