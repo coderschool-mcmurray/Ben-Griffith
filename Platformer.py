@@ -13,9 +13,10 @@ COLORS={
 GRAVITY=0.75
 fall=0
 jump=-9.5
+startJump=-9.5
 pygame.init()
 
-pygame.display.set_caption('Dot Game thingy')
+pygame.display.set_caption('The Best Platformer That May Or May Not Be Possible')
 display = pygame.display.set_mode(WINDSIZE)
 
 #create floor class
@@ -98,7 +99,19 @@ while r:
     if keys[pygame.K_1]:
         r=False
     fall+=GRAVITY
-    y+=fall
+    ex=False
+    if fall>0:
+        for _ in range(round(fall)):
+            y+=1
+            for b in blocks:
+                if b.is_collision(x,y,l,w):
+                    if b.color == "BLACK":
+                        ex=True
+                        break
+            if ex:
+                break
+    else:
+        y+=fall
     if y>WINDSIZE[1]:
         blocks.clear()
         level+=1
@@ -108,9 +121,12 @@ while r:
         fall=0
     for b in blocks:
         if b.is_collision(x,y,l,w):
+            jump = startJump
             if b.color=="RED":
                 x=0
                 y=0
+            elif b.color=='GREEN':
+                jump=-25
             elif fall<0:
                 y=b.y_loc+ b.length
             else:
