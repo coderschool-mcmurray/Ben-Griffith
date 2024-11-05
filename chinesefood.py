@@ -4,7 +4,7 @@ l-load level
 0-Red (stranger danger)
 1- Green (Jump Ooze)
 2-Blue
-3-white
+3-white(wall Jump)
 4-Black(normal)
 5- Gray(background)
 r-undo
@@ -97,8 +97,8 @@ while r:
                     y=y_pos
                     create=True
                 for i in range(len(blocks)):
-                    
-                    if blocks[i].is_collision(x_pos,y_pos,1,1):
+                    keys=pygame.key.get_pressed()
+                    if blocks[i].is_collision(x_pos,y_pos,1,1) and keys[pygame.K_m]:
                         blocks.pop(i)
                         break
                 else:

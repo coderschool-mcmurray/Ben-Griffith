@@ -67,7 +67,7 @@ speed = 5
 
 #game running?
 r = True
-level=1
+level=7
 blocks=get_level(f'level{level}')
 
 move_l=False
@@ -87,8 +87,14 @@ while r:
             j=True
         if b.is_collision(x-speed,y,l,w):
             move_l=False
+            x=b.x_loc+b.width
+            if b.color=="WHITE":
+                j=True
         if b.is_collision(x+speed,y,l,w):
             move_r=False
+            x=b.x_loc-w
+            if b.color=="WHITE":
+                j=True
     keys=pygame.key.get_pressed()
     if keys[pygame.K_UP] and y>0 and j:
         fall=jump
