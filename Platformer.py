@@ -1,5 +1,5 @@
 import pygame
-
+import time
 
 WINDSIZE=[500,500]
 COLORS={
@@ -42,6 +42,7 @@ class Block:
             return False
         return True
 
+
 def get_level(workfile):
     blocks=[]
     f=open(workfile, 'r', encoding="utf-8")
@@ -64,10 +65,15 @@ l= 10
 
 #character speed
 speed = 5
+default_speed=5
+blue_speed=2
+time_for_speed=0
+
+
 
 #game running?
 r = True
-level=7
+level=6
 blocks=get_level(f'level{level}')
 
 move_l=False
@@ -82,17 +88,21 @@ while r:
     move_r=True
     j=False
     
+    if int(time.time()*1000)>=time_for_speed:
+        speed=default_speed
+    
     for b in blocks:
         if b.is_collision(x,y+1,l,w):
             j=True
+            if b.color=="BLUE":
+                time_for_speed=int(time.time()*1000)+1000
+                speed=blue_speed
         if b.is_collision(x-speed,y,l,w):
             move_l=False
-            x=b.x_loc+b.width
             if b.color=="WHITE":
                 j=True
         if b.is_collision(x+speed,y,l,w):
             move_r=False
-            x=b.x_loc-w
             if b.color=="WHITE":
                 j=True
     keys=pygame.key.get_pressed()
@@ -136,6 +146,9 @@ while r:
             elif fall<0:
                 y=b.y_loc+ b.length
             else:
+                if b.color=="BLUE":
+                    time_for_speed=int(time.time()*1000)+1000
+                    speed=blue_speed
                 y=b.y_loc-l
             fall=0
     display.fill((100,100,100))

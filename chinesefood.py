@@ -3,10 +3,10 @@ s-save level
 l-load level
 0-Red (stranger danger)
 1- Green (Jump Ooze)
-2-Blue
+2-Blue()
 3-white(wall Jump)
 4-Black(normal)
-5- Gray(background)
+5- Gray()
 r-undo
 '''
 import pygame
