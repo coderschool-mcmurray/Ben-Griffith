@@ -3,10 +3,11 @@ s-save level
 l-load level
 0-Red (stranger danger)
 1- Green (Jump Ooze)
-2-Blue()
+2-Blue(slow)
 3-white(wall Jump)
 4-Black(normal)
-5- Gray()
+5- Gray(door)
+6- Purple(key)
 r-undo
 '''
 import pygame
@@ -20,6 +21,7 @@ COLORS={
     'BLUE' : (0,0,255),
     'WHITE' : (255,255,255),
     'BLACK'  :(0,0,0),
+    'PURPLE' :(134,4,199),
     'GRAY' : (50,50,50)}
 
 pygame.init()
@@ -123,6 +125,8 @@ while r:
         color="BLACK"
     elif keys[pygame.K_5]:
         color="GRAY"
+    elif keys[pygame.K_6]:
+        color='PURPLE'
     elif keys[pygame.K_r]:
         blocks.pop(-1)
         pygame.time.delay(100)

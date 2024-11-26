@@ -7,13 +7,14 @@ COLORS={
     'GREEN' : (0,255,0),
     'BLUE' : (0,0,255),
     'WHITE' : (255,255,255),
-    'BLACK'  :(0,0,0),
+    'BLACK' : (0,0,0),
+    'PURPLE' : (134,4,199),
     'GRAY' : (50,50,50)}
 
 GRAVITY=0.75
 fall=0
 jump=-9.5
-startJump=-9.5
+startJump=jump
 pygame.init()
 
 pygame.display.set_caption('The Best Platformer That May Or May Not Be Possible')
@@ -44,113 +45,130 @@ class Block:
 
 
 def get_level(workfile):
-    blocks=[]
-    f=open(workfile, 'r', encoding="utf-8")
+    blocks = []
+    f = open(workfile, 'r', encoding="utf-8")
     for line in f:
-        line=line.split(',')
-        x=int(line[0])
-        y=int(line[1])
-        length=int(line[2])
-        width=int(line[3])
-        color=line[4]
+        line = line.split(',')
+        x = int(line[0])
+        y = int(line[1])
+        length = int(line[2])
+        width = int(line[3])
+        color = line[4]
         blocks.append(Block(x,y,length,width,color))
     return blocks
 #starting location
 x = 0
-y= 0
+y = 0
 
 #character size
-w= 10
-l= 10
+w = 10
+l = 10
 
 #character speed
 speed = 5
-default_speed=5
-blue_speed=2
-time_for_speed=0
+default_speed = 5
+blue_speed = 2
+time_for_speed = 0
 
 
 
 #game running?
 r = True
-level=6
-blocks=get_level(f'level{level}')
-
-move_l=False
-move_r=False
-j=False
+level = 9
+blocks = get_level(f'level{level}')
+b_blocks=list(blocks)
+delete=[]
+key=False
+for i,b in enumerate(blocks):
+    if b.color=='GRAY':
+        delete.append(i)
+    if b.color=='PURPLE':
+        delete.append(i)
+delete.reverse()
+move_l = False
+move_r = False
+j = False
 while r:
     pygame.time.delay(20)
     for event in pygame.event.get():
-        if event.type==pygame.QUIT:
-            r= False
-    move_l=True
-    move_r=True
-    j=False
+        if event.type == pygame.QUIT:
+            r = False
+    move_l = True
+    move_r = True
+    j = False
     
-    if int(time.time()*1000)>=time_for_speed:
-        speed=default_speed
+    if int(time.time() * 1000) >= time_for_speed:
+        speed = default_speed
     
     for b in blocks:
         if b.is_collision(x,y+1,l,w):
-            j=True
-            if b.color=="BLUE":
-                time_for_speed=int(time.time()*1000)+1000
-                speed=blue_speed
+            j = True
+            if b.color == "BLUE":
+                time_for_speed = int(time.time()*1000)+1000
+                speed = blue_speed
         if b.is_collision(x-speed,y,l,w):
-            move_l=False
-            if b.color=="WHITE":
-                j=True
+            move_l = False
+            if b.color == "WHITE":
+                j = True
         if b.is_collision(x+speed,y,l,w):
-            move_r=False
-            if b.color=="WHITE":
-                j=True
+            move_r = False
+            if b.color == "WHITE":
+                j = True
     keys=pygame.key.get_pressed()
-    if keys[pygame.K_UP] and y>0 and j:
-        fall=jump
-    if keys[pygame.K_LEFT] and x>0 and move_l:
-        x-=speed
-    if move_r and keys[pygame.K_RIGHT] and x<WINDSIZE[0]-w:
-        x+=speed
+    if keys[pygame.K_UP] and y > 0 and j:
+        fall = jump
+    if keys[pygame.K_LEFT] and x > 0 and move_l:
+        x -= speed
+    if move_r and keys[pygame.K_RIGHT] and x < WINDSIZE[0]-w:
+        x += speed
     if keys[pygame.K_1]:
-        r=False
-    fall+=GRAVITY
-    ex=False
-    if fall>0:
+        r = False
+    fall += GRAVITY
+    ex = False
+    if fall > 0:
         for _ in range(round(fall)):
-            y+=1
+            y += 1
             for b in blocks:
                 if b.is_collision(x,y,l,w):
                     if b.color == "BLACK":
-                        ex=True
+                        ex = True
                         break
             if ex:
                 break
     else:
-        y+=fall
-    if y>WINDSIZE[1]:
+        y += fall
+    if y > WINDSIZE[1]:
         blocks.clear()
-        level+=1
-        blocks=get_level(f'level{level}')
-        x=0
-        y=0
-        fall=0
+        level += 1
+        blocks = get_level(f'level{level}')
+        x = 0
+        y = 0
+        fall = 0
+        b_blocks=list(blocks)
+    
     for b in blocks:
         if b.is_collision(x,y,l,w):
             jump = startJump
-            if b.color=="RED":
-                x=0
-                y=0
-            elif b.color=='GREEN':
-                jump=-25
-            elif fall<0:
-                y=b.y_loc+ b.length
+            if b.color == "RED":
+                x = 0
+                y = 0
+                blocks=b_blocks
+            elif b.color =='PURPLE':
+                   key=True
+            elif b.color == 'GREEN':
+                jump = -25
+            elif fall < 0:
+                y = b.y_loc + b.length
             else:
-                if b.color=="BLUE":
-                    time_for_speed=int(time.time()*1000)+1000
-                    speed=blue_speed
-                y=b.y_loc-l
-            fall=0
+                if b.color == "BLUE":
+                    time_for_speed = int(time.time()*1000)+1000
+                    speed = blue_speed
+                y = b.y_loc-l
+            fall = 0
+    if key:
+        for i in delete:
+            blocks.pop(i)
+        key = False
     display.fill((100,100,100))
     for b in blocks:
         b.draw(display)
