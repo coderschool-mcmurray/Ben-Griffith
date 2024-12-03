@@ -199,7 +199,7 @@ while r:
             elif b.color =='PURPLE':
                    key=True
             #mega jump if on green
-            if b.color == 'GREEN':
+            elif b.color == 'GREEN':
                 jump = -25
             #stop rising
             elif fall < 0:
