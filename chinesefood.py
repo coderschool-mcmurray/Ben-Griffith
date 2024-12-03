@@ -1,6 +1,7 @@
 '''
 s-save level
 l-load level
+M click- delete the clicked block on the lowest layer
 0-Red (stranger danger)
 1- Green (Jump Ooze)
 2-Blue(slow)

@@ -74,7 +74,7 @@ time_for_speed = 0
 
 #game running?
 r = True
-level = 9
+level = 1
 blocks = get_level(f'level{level}')
 b_blocks=list(blocks)
 delete=[]
@@ -136,7 +136,15 @@ while r:
             if ex:
                 break
     else:
-        y += fall
+        for _ in range(round(-fall)):
+            y -= 1
+            for b in blocks:
+                if b.is_collision(x,y,l,w):
+                    if b.color == "BLACK":
+                        ex = True
+                        break
+            if ex:
+                break
     if y > WINDSIZE[1]:
         blocks.clear()
         level += 1
@@ -145,14 +153,20 @@ while r:
         y = 0
         fall = 0
         b_blocks=list(blocks)
-    
+        delete=[]
+        for i,b in enumerate(blocks):
+            if b.color=='GRAY':
+                delete.append(i)
+            if b.color=='PURPLE':
+                delete.append(i)
+        delete.reverse()
     for b in blocks:
         if b.is_collision(x,y,l,w):
             jump = startJump
             if b.color == "RED":
                 x = 0
                 y = 0
-                blocks=b_blocks
+                blocks=list(b_blocks)
             elif b.color =='PURPLE':
                    key=True
             elif b.color == 'GREEN':
